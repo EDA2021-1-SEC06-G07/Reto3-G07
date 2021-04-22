@@ -37,7 +37,11 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("2- R1: Caracterizar las reproducciones")
+    print("3- R2: Encontrar música para festejar")
+    print("4- R3: Encontrar música para estudiar")
+    print("5- R4: Estudiar los géneros musicales")
+    print("6- R5: Indicar el género musical más escuchado en el tiempo")
 
 catalog = None
 
@@ -49,8 +53,26 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-
+        analyzer = controller.init()
     elif int(inputs[0]) == 2:
+        print("\nCargando información de eventos ....")
+        controller.loadData(analyzer)
+        print('Eventos cargados: ' + str(controller.crimesSize(analyzer)))
+        print('Altura del arbol: ' + str(controller.indexHeight(analyzer)))
+        print('Elementos en el arbol: ' + str(controller.indexSize(analyzer)))
+        print('Menor Llave: ' + str(controller.minKey(analyzer)))
+        print('Mayor Llave: ' + str(controller.maxKey(analyzer)))
+
+    elif int(inputs[0]) == 3:
+        pass
+
+    elif int(inputs[0]) == 4:
+        pass
+
+    elif int(inputs[0]) == 5:
+        pass
+
+    elif int(inputs[0]) == 6:
         pass
 
     else:
