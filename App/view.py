@@ -19,7 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
-
+import time
+import tracemalloc
 import config as cf
 import sys
 import controller
@@ -56,8 +57,21 @@ while True:
         analyzer = controller.init()
     elif int(inputs[0]) == 2:
         print("\nCargando información de eventos ....")
+        tracemalloc.start()
+        delta_time = -1.0
+    
+        start_time= float(time.perf_counter()*1000)
+        
         controller.loadData(analyzer)
-        print('Eventos cargados: ' + str(controller.crimesSize(analyzer)))
+    
+    
+        stop_time = float(time.perf_counter()*1000)
+        tracemalloc.stop()
+        delta_time = stop_time - start_time
+        
+    
+        print(delta_time)
+        print('Eventos cargados: ' + str(controller.listSize(analyzer)))
         print('Altura del arbol: ' + str(controller.indexHeight(analyzer)))
         print('Elementos en el arbol: ' + str(controller.indexSize(analyzer)))
         print('Menor Llave: ' + str(controller.minKey(analyzer)))

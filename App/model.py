@@ -42,72 +42,240 @@ los mismos.
 
 def newAnalyzer():
     analyzer = {'eventos': None,
-                'track_id': None}
-    analyzer['eventos'] = lt.newList('ARRAY_LIST', compareDate)
+                'sentiment': None,
+                'features': None,
+                'instrumentalness': None,
+                'liveness': None,
+                'danceability': None,
+                'valance': None,
+                'loudness': None,
+                'tempo': None,
+                'acousticness': None,
+                'energy': None}
+
+    analyzer['features'] = lt.newList('ARRAY_LIST')
+    analyzer['sentiment'] = lt.newList('ARRAY_LIST')
+    analyzer['eventos'] = lt.newList(datastructure='ARRAY_LIST',cmpfunction=compareId)
     
-    analyzer['track_id'] = om.newMap(omaptype='BST',
-                                    comparefunction=compareIds)  
-    return analyzer                                                                
+    analyzer['instrumentalness'] = om.newMap(omaptype='RBT',
+                                            comparefunction=compareValues)
+    
+    analyzer['liveness'] = om.newMap(omaptype='RBT',
+                                            comparefunction=compareValues)
+
+    analyzer['speechiness'] = om.newMap(omaptype='RBT',
+                                            comparefunction=compareValues)
+
+    analyzer['danceability'] = om.newMap(omaptype='RBT',
+                                            comparefunction=compareValues)
+    
+    analyzer['valence'] = om.newMap(omaptype='RBT',
+                                            comparefunction=compareValues)
+    
+    analyzer['loudness'] = om.newMap(omaptype='RBT',
+                                            comparefunction=compareValues)
+
+    analyzer['tempo'] = om.newMap(omaptype='RBT',
+                                            comparefunction=compareValues)
+
+    analyzer['acousticness'] = om.newMap(omaptype='RBT',
+                                            comparefunction=compareValues)  
+
+    analyzer['energy'] = om.newMap(omaptype='RBT',
+                                            comparefunction=compareValues)      
+
+    return analyzer 
+
 # Funciones para agregar informacion al catalogo
+def addFeature(analyzer, feature):
+    lt.addLast(analyzer['features'], feature)
+
+def addSentiment(analyzer, sentiment):
+    if sentiment['vader_avg'] != None:
+        tple= (sentiment['hashtag'],sentiment['vader_avg'])
+        lt.addLast(analyzer['sentiment'],tple)
+
 def addEvent(analyzer, evento):
-    lt.addLast(analyzer['eventos'], evento)
-    addTrackId(analyzer['track_id'], evento)
+    """
+    features = analyzer['features']
+    sentiment = analyzer['sentiment']
 
+    modEvent = addFeatuere_event(features,evento,analyzer)
+    finalEvent = addSentiment_event(sentiment,modEvent)
+    """
+    lt.addLast(analyzer['eventos'],evento)
+    addKeyValueInstr(analyzer, evento)
+    addKeyValueLive(analyzer, evento)
+    addKeyValueAcous(analyzer, evento)
+    addKeyValueDance(analyzer, evento)
+    addKeyValueEnergy(analyzer, evento)
+    addKeyValueLoud(analyzer, evento)
+    addKeyValueTempo(analyzer, evento)
+    addKeyValueVal(analyzer, evento)
+    addKeyValueSpe(analyzer, evento)
+    
 # Funciones para creacion de datos
+"""
+def addFeatuere_event(features,event,analyzer):
+    for feature in lt.iterator(features):
+        if (event['user_id'] == feature['user_id']) and (event['track_id'] == feature['track_id']):
+            event['track_id'] = feature
+            return event
 
-def addTrackId(map1, evento):
-    
-    track_id = evento['track_id']
-    entry = om.get(map1, track_id)
-    if entry is None:
-        datentry = newDataEntry(evento)
-        om.put(map1, track_id, datentry)
-    
-    return map
 
-def newDataEntry(evento):
-    entry = {'evento': None, 'features': None}
-    entry['evento'] = evento
-    entry['features'] = mp.newMap(numelements=123,
-                                maptype='CHAINING',
-                                loadfactor=4.0)
-    return entry
+def addSentiment_event(sentiments,event):
+    if event != None:
+        for sentiment in lt.iterator(sentiments):
+            hashtag,vader_avg = sentiment
+            if event['hashtag'] == hashtag:
+                event['hashtag'] = vader_avg
+                return event
+"""   
+
+def addKeyValueInstr(analyzer,event):
+    value = float(event['instrumentalness'])
+
+    entryInstr = om.get(analyzer['instrumentalness'], value)
+    if entryInstr is None:
+        datentry = newValues(event)
+        om.put(analyzer['instrumentalness'], value, datentry)
+    else:
+        datentry = me.getValue(entryInstr)
+    lt.addLast(datentry, event)
+
+def addKeyValueLive(analyzer,event):    
+    value = float(event['liveness'])
+
+    entryLive = om.get(analyzer['liveness'], value)
+    if entryLive is None:
+        datentry = newValues(event)
+        om.put(analyzer['liveness'], value, datentry)
+    else:
+        datentry = me.getValue(entryLive)
+    lt.addLast(datentry, event)
+
+def addKeyValueSpe(analyzer,event):    
+    value = float(event['speechiness'])
+
+    entrySpe = om.get(analyzer['speechiness'], value)
+    if entrySpe is None:
+        datentry = newValues(event)
+        om.put(analyzer['speechiness'], value, datentry)
+    else:
+        datentry = me.getValue(entrySpe)
+    lt.addLast(datentry, event)
+
+
+def addKeyValueDance(analyzer,event):
+    value = float(event['danceability'])
+
+    entryDance = om.get(analyzer['danceability'], value)
+    if entryDance is None:
+        datentry = newValues(event)
+        om.put(analyzer['danceability'], value, datentry)
+    else:
+        datentry = me.getValue(entryDance)
+    lt.addLast(datentry, event)
+
+def addKeyValueVal(analyzer,event):
+    value = float(event['valence'])
+
+    entryVal = om.get(analyzer['valence'], value)
+    if entryVal is None:
+        datentry = newValues(event)
+        om.put(analyzer['valence'], value, datentry)
+    else:
+        datentry = me.getValue(entryVal)
+    lt.addLast(datentry, event)
+    
+def addKeyValueLoud(analyzer,event):
+    value = float(event['loudness'])
+
+    entryLoud = om.get(analyzer['loudness'], value)
+    if entryLoud is None:
+        datentry = newValues(event)
+        om.put(analyzer['loudness'], value, datentry)
+    else:
+        datentry = me.getValue(entryLoud)
+    lt.addLast(datentry, event)
+
+def addKeyValueTempo(analyzer,event):
+    value = float(event['tempo'])
+
+    entryTempo = om.get(analyzer['tempo'], value)
+    if entryTempo is None:
+        datentry = newValues(event)
+        om.put(analyzer['tempo'], value, datentry)
+    else:
+        datentry = me.getValue(entryTempo)
+    lt.addLast(datentry, event)
+
+def addKeyValueAcous(analyzer,event):
+    value = float(event['acousticness'])
+
+    entryAcous = om.get(analyzer['acousticness'], value)
+    if entryAcous is None:
+        datentry = newValues(event)
+        om.put(analyzer['acousticness'], value, datentry)
+    else:
+        datentry = me.getValue(entryAcous)
+    lt.addLast(datentry, event)
+
+def addKeyValueEnergy(analyzer,event):
+    value = float(event['energy'])
+    
+    entryEnergy = om.get(analyzer['energy'],value)
+    if entryEnergy  is None:
+        datentry = newValues(event)
+        om.put(analyzer['instrumentalness'], value, datentry)
+    else:
+        datentry = me.getValue(entryEnergy)
+    lt.addLast(datentry, event)
+
+
+def newValues(event):
+    lstEvent = lt.newList(datastructure='ARRAY_LIST')
+    lt.addLast(lstEvent,event)
+    return lstEvent
+
 # Funciones de consulta
-def crimesSize(analyzer):
+def listSize(analyzer):
     
     return lt.size(analyzer['eventos'])
 
 
 def indexHeight(analyzer):
    
-    return om.height(analyzer['track_id'])
+    return om.height(analyzer['instrumentalness'])
 
 
 def indexSize(analyzer):
     
-    return om.size(analyzer['track_id'])
+    return om.size(analyzer['instrumentalness'])
 
 
 def minKey(analyzer):
     
-    return om.minKey(analyzer['track_id'])
+    return om.minKey(analyzer['instrumentalness'])
 
 
 def maxKey(analyzer):
     
-    return om.maxKey(analyzer['track_id'])
+    return om.maxKey(analyzer['instrumentalness'])
 
 # Funciones utilizadas para comparar elementos dentro de una lista
-def compareDate(evento1, evento2):
-    if evento1['created_at'] > evento2['created_at']:
+def compareId(evento1, evento2):
+    if evento1['id'] == evento2['id']:
+        return 0
+    elif evento1['id'] > evento2['id']:
         return 1
     else:
         return -1
 
-def compareIds(id1,id2):
-    if (id1 == id2):
+def compareValues(v1,v2):
+    if (v1 == v2):
         return 0
-    elif id1 > id2:
+    elif v1 > v2:
         return 1
     else:
         return -1

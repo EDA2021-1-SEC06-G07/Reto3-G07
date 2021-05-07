@@ -38,20 +38,42 @@ def loadData(analyzer):
     """
     Carga los datos de los archivos CSV en el modelo
     """
+    #loadFeature(analyzer)
+    #loadSentiment(analyzer)
+    loadEvent(analyzer)
+    
+    return analyzer
+
+"""
+def loadSentiment(analyzer):
+    sentimentfile = cf.data_dir + 'sentiment_values.csv'
+    input_file = csv.DictReader(open(sentimentfile, encoding="utf-8"),
+                                delimiter=",")
+    for sentiment in input_file:
+        model.addSentiment(analyzer, sentiment)
+
+def loadDates(analyzer):
     eventsfile = cf.data_dir + 'user_track_hashtag_timestamp-small.csv'
     input_file = csv.DictReader(open(eventsfile, encoding="utf-8"),
                                 delimiter=",")
     for evento in input_file:
         model.addEvent(analyzer, evento)
-    return analyzer
+"""
+def loadEvent(analyzer):
+    eventfile = cf.data_dir + 'context_content_features-small.csv'
+    input_file = csv.DictReader(open(eventfile, encoding="utf-8"),
+                                delimiter=",")
+    for event in input_file:
+        model.addEvent(analyzer, event)
+
 # Funciones para la carga de datos
 
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
-def crimesSize(analyzer):
+def listSize(analyzer):
     
-    return model.crimesSize(analyzer)
+    return model.listSize(analyzer)
 
 
 def indexHeight(analyzer):
