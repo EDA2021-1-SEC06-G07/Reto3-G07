@@ -38,13 +38,14 @@ def loadData(analyzer):
     """
     Carga los datos de los archivos CSV en el modelo
     """
-    #loadFeature(analyzer)
-    #loadSentiment(analyzer)
+    loadSentiment(analyzer)
+    loadDates(analyzer)
     loadEvent(analyzer)
+    
     
     return analyzer
 
-"""
+
 def loadSentiment(analyzer):
     sentimentfile = cf.data_dir + 'sentiment_values.csv'
     input_file = csv.DictReader(open(sentimentfile, encoding="utf-8"),
@@ -53,12 +54,12 @@ def loadSentiment(analyzer):
         model.addSentiment(analyzer, sentiment)
 
 def loadDates(analyzer):
-    eventsfile = cf.data_dir + 'user_track_hashtag_timestamp-small.csv'
-    input_file = csv.DictReader(open(eventsfile, encoding="utf-8"),
+    timestampfile = cf.data_dir + 'user_track_hashtag_timestamp-small.csv'
+    input_file = csv.DictReader(open(timestampfile, encoding="utf-8"),
                                 delimiter=",")
     for evento in input_file:
-        model.addEvent(analyzer, evento)
-"""
+        model.addtimestamp(analyzer, evento)
+
 def loadEvent(analyzer):
     eventfile = cf.data_dir + 'context_content_features-small.csv'
     input_file = csv.DictReader(open(eventfile, encoding="utf-8"),
@@ -83,6 +84,9 @@ def requerimiento_3(analyzer,minI,maxI,minT,maxT):
 def requerimiento_4(analyzer,generos,newGen,min1,max1):
     return model.generos_musicales(analyzer,generos,newGen,min1,max1)
 
+def requerimiento_5(analyzer,minh,maxh):
+    return model.generos_tiempo(analyzer,minh,maxh)
+    
 def listSize(lst):
     return model.listSize(lst)
 
@@ -94,3 +98,6 @@ def subList(lst,pos,numelem):
 
 def getValue(map1,key):
     return model.getValue(map1,key)
+
+def hola(analyzer):
+    return model.hola(analyzer)

@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 import time
+import datetime
 import tracemalloc
 import config as cf
 import sys
@@ -95,6 +96,7 @@ while True:
             print(evento)
             n+=1
         print()
+        print(controller.hola(analyzer))
 
     elif int(inputs[0]) == 3:
         feature = str(input('feature: '))
@@ -131,6 +133,7 @@ while True:
             print(f'track {n}: {track_id} con energy de {energy} & danceability de {dance}')
             n+=1
         print()
+        
 
 
     elif int(inputs[0]) == 5:
@@ -192,7 +195,36 @@ while True:
         print()
 
     elif int(inputs[0]) == 7:
-        pass
+        minh = str(input('Valor mínimo hora: '))
+        minm = str(input('Valor mínimo de los minutos de la hora anterior: '))
+        maxh = str(input('Valor máximo hora: '))
+        maxm = str(input('Valor máximo de los minutos de la hora anterior: '))
+        minT = datetime.time(minh,minm,'00')
+        maxT = datetime.time(maxh,maxm,'00')
+        lst,prim,repT= controller.requerimiento_5(analyzer,minh,maxh)
+        print()
+        print('***** Req No. 5 resultados *****')
+        print(f'Hay un total de {repT} reproducciones entre {minT} y {maxT}')
+        print()
+        print('===== Generos ordenados =====')
+        n=1
+        for dict in lt.iterator(lst):
+            genero = controller.getValue(dict,'genero')
+            rep = controller.getValue(dict,'num_rep')
+            print(f'TOP {n}: {genero} con {rep} reps')
+            n+=1
+        print()
+        prmGen = controller.getValue(prim,'genero')
+        prmRep = controller.getValue(prim,'num_rep')
+        print(f'El genero TOP es {prmGen} con {prmRep} reproducciones...')
+        print()
+        u_tracks = controller.getValue()
+        lstPrm = controller.getValue(prim,'hashtag')
+        n
+        for track in lt.iterator(lstPrm):
+            track_id,tple=track
+            numH,prmd =tple
+
     else:
         sys.exit(0)
 sys.exit(0)
