@@ -71,26 +71,26 @@ def loadEvent(analyzer):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
-def listSize(analyzer):
-    
-    return model.listSize(analyzer)
+def requerimiento_1(analyzer,feature,minF,maxF):
+    return model.caracterizar_reproducciones_R1(analyzer,feature,minF,maxF)
 
+def requerimiento_2(analyzer,minE,maxE,minD,maxD):
+    return model.musica_festejar_R2(analyzer,minE,maxE,minD,maxD)
 
-def indexHeight(analyzer):
-    
-    return model.indexHeight(analyzer)
+def requerimiento_3(analyzer,minI,maxI,minT,maxT):
+    return model.musica_estudiar_R3(analyzer,minI,maxI,minT,maxT)
 
+def requerimiento_4(analyzer,generos,newGen,min1,max1):
+    return model.generos_musicales(analyzer,generos,newGen,min1,max1)
 
-def indexSize(analyzer):
-    
-    return model.indexSize(analyzer)
+def listSize(lst):
+    return model.listSize(lst)
 
+def keysSize(omap):
+    return model.keysSize(omap)
 
-def minKey(analyzer):
-    
-    return model.minKey(analyzer)
+def subList(lst,pos,numelem):
+    return model.subList(lst,pos,numelem)
 
-
-def maxKey(analyzer):
-    
-    return model.maxKey(analyzer)
+def getValue(map1,key):
+    return model.getValue(map1,key)

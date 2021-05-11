@@ -37,12 +37,13 @@ operación solicitada
 
 def printMenu():
     print("Bienvenido")
-    print("1- Cargar información en el catálogo")
-    print("2- R1: Caracterizar las reproducciones")
-    print("3- R2: Encontrar música para festejar")
-    print("4- R3: Encontrar música para estudiar")
-    print("5- R4: Estudiar los géneros musicales")
-    print("6- R5: Indicar el género musical más escuchado en el tiempo")
+    print("1- Cargar crear catálogo")
+    print("2- Cargar información en el catálogo")
+    print("3- R1: Caracterizar las reproducciones")
+    print("4- R2: Encontrar música para festejar")
+    print("5- R3: Encontrar música para estudiar")
+    print("6- R4: Estudiar los géneros musicales")
+    print("7- R5: Indicar el género musical más escuchado en el tiempo")
 
 catalog = None
 
@@ -55,6 +56,7 @@ while True:
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
         analyzer = controller.init()
+
     elif int(inputs[0]) == 2:
         print("\nCargando información de eventos ....")
         tracemalloc.start()
@@ -71,24 +73,126 @@ while True:
         
     
         print(delta_time)
-        print('Eventos cargados: ' + str(controller.listSize(analyzer)))
-        print('Altura del arbol: ' + str(controller.indexHeight(analyzer)))
-        print('Elementos en el arbol: ' + str(controller.indexSize(analyzer)))
-        print('Menor Llave: ' + str(controller.minKey(analyzer)))
-        print('Mayor Llave: ' + str(controller.maxKey(analyzer)))
+        print()
+        print('Eventos cargados: ' + str(controller.listSize(analyzer['eventos'])))
+        print('Artistas únicos: ' + str(controller.keysSize(analyzer['artistas_u'])))
+        print('Pistas únicas de audio: ' + str(controller.keysSize(analyzer['tracks_u'])))
+        print()
+        primeros = controller.subList(analyzer['eventos'],1,5)
+        print('--- Primeros cinco eventos cargados---')
+        n = 1
+        for evento in lt.iterator(primeros): 
+            print(f'evento {n}:')
+            print(evento)
+            n+=1
+        print()
+        pos = controller.listSize(analyzer['eventos'])
+        ultimos = controller.subList(analyzer['eventos'],pos-5,5)
+        print('--- Ultimos cinco eventos cargados---' )
+        n = 1
+        for evento in lt.iterator(primeros): 
+            print(f'evento {n}:')
+            print(evento)
+            n+=1
+        print()
 
     elif int(inputs[0]) == 3:
-        pass
+        feature = str(input('feature: '))
+        featureL = feature.lower()
+        minF = float(input('minF: '))
+        maxF = float(input('maxF: '))
+        totalR,totalA = (controller.requerimiento_1(analyzer,featureL,minF,maxF))
+        print('\n')
+        print('***** Req No. 1 resultados *****')
+        print()
+        print(f'{feature} entre {minF} & {maxF}')
+        print(f'Total de reproducciones: {totalR} || Total de artistas únicos: {totalA}')
+        print()
 
     elif int(inputs[0]) == 4:
-        pass
+        minE = float(input('Mínimo valor energy: '))
+        maxE = float(input('Máximo valor energy: '))
+        minD = float(input('Mínimo valor danceability: '))
+        maxD = float(input('Máximo valor danceability: '))
+        size,cinco = (controller.requerimiento_2(analyzer,minE,maxE,minD,maxD))
+        print('\n')
+        print('***** Req No. 2 resultados *****')
+        print()
+        print(f'Energy entre {minE} - {maxE}')
+        print(f'Danceability entre {minD} - {maxD}')
+        print(f'Total de tracks únicos en eventos: {size}')
+        print()
+        print('--- Tracks únicos ---')
+        n = 1
+        for evento in lt.iterator(cinco): 
+            track_id = evento['track_id']
+            energy = evento['energy']
+            dance = evento['danceability']
+            print(f'track {n}: {track_id} con energy de {energy} & danceability de {dance}')
+            n+=1
+        print()
+
 
     elif int(inputs[0]) == 5:
-        pass
+        minI = float(input('Mínimo valor isntrumentalness: '))
+        maxI = float(input('Máximo valor isntrumentalness: '))
+        minT = float(input('Mínimo valor tempo: '))
+        maxT = float(input('Máximo valor tempo: '))
+        size,cinco = (controller.requerimiento_3(analyzer,minI,maxI,minT,maxT))
+        print('\n')
+        print('***** Req No. 3 resultados *****')
+        print()
+        print(f'Instrumentalness entre {minI} - {maxI}')
+        print(f'Tempo entre {minT} - {maxT}')
+        print(f'Total de tracks únicos en eventos: {size}')
+        print()
+        print('--- Tracks únicos ---')
+        n = 1
+        for evento in lt.iterator(cinco): 
+            track_id = evento['track_id']
+            instr= evento['instrumentalness']
+            tempo = evento['tempo']
+            print(f'track {n}: {track_id} con instrumentalness de {instr} & tempo de {tempo}')
+            n+=1
+        print()
 
     elif int(inputs[0]) == 6:
-        pass
+        newGen = None 
+        min1 = 0
+        max1 = 0
+        generos = str(input('Generos separados por (\",\") y sin espacios: '))
+        deseo = str(input('¿Desea añadir un nuevo genero? (si o no): '))
+        if deseo == 'si':
+            newGen = str(input('Nombre del nuevo genero: '))
+            min1 = float(input('Mínimo valor tempo: '))
+            max1 = float(input('Máximo valor tempo: '))
+        num_rep,lst = (controller.requerimiento_4(analyzer,generos,newGen,min1,max1))
+        print('\n')
+        print('***** Req No. 4 resultados *****')
+        print()
+        print(f'Total de reproducciones: {num_rep}')
+        print()
 
+        for map1 in lt.iterator(lst):
+            genero = controller.getValue(map1,'genero')
+            rango = controller.getValue(map1,'rango')
+            rep = controller.getValue(map1,'num_rep')
+            num_arts = controller.getValue(map1,'numero_arts')
+            arts = controller.getValue(map1,'ten_arts')
+            print(f'===== {genero} =====')
+            print(f'para {genero} entre {rango}')
+            print(f'reproducciones de {genero}: {rep} con {num_arts} diferentes artistas')
+            print()
+            n = 1
+            for id1 in lt.iterator(arts):
+                print(f'Artista {n}: {id1}')
+                n+=1
+            print()
+                
+        print()
+
+    elif int(inputs[0]) == 7:
+        pass
     else:
         sys.exit(0)
 sys.exit(0)
